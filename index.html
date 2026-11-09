@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hakus – Car inspection (katsastus) and repair station in Espoo</title>
+<meta name="description" content="Hakus is a car inspection (katsastus) and mechanical repair station at Hannuksenpelto 8, Espoo. Walk-in inspections, oil service, timing belts and diagnostics. Open Mon-Fri 08:00-17:00.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230f172a'/%3E%3Crect x='8' y='8' width='48' height='48' fill='none' stroke='%232563eb' stroke-width='4'/%3E%3Cpath d='M20 33l8 8 16-18' fill='none' stroke='%23fff' stroke-width='6' stroke-linecap='square'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --slate:#0f172a;
+  --slate-2:#1e293b;
+  --blue:#2563eb;
+  --blue-dark:#1d4ed8;
+  --paper:#ffffff;
+  --bg:#f4f6f9;
+  --line:#d7dee8;
+  --line-dark:#b9c4d2;
+  --ink:#0f172a;
+  --muted:#55647a;
+  --ok:#15803d;
+  --fail:#b91c1c;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  color:var(--ink);
+  background:var(--bg);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+img{display:block;max-width:100%}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.mono{font-family:var(--mono)}
+
+/* ---------- Top stamp strip ---------- */
+.stamp-strip{
+  background:var(--slate);
+  color:#cbd5e1;
+  border-bottom:1px solid #000;
+  font-family:var(--mono);
+  font-size:.72rem;
+  letter-spacing:.08em;
+}
+.stamp-strip .wrap{
+  display:flex;flex-wrap:wrap;gap:0;
+}
+.stamp{
+  padding:.5rem 1rem;
+  border-right:1px solid #24304a;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.stamp:first-child{padding-left:0}
+.stamp b{color:#fff;font-weight:600}
+.stamp a{color:#93c5fd;text-decoration:none}
+.stamp a:hover{text-decoration:underline}
+.stamp.push{margin-left:auto;border-right:none;border-left:1px solid #24304a;padding-right:0}
+@media (max-width:720px){
+  .stamp.push{margin-left:0;border-left:none}
+  .stamp-strip .wrap{gap:0 .5rem}
+  .stamp{padding:.4rem .6rem .4rem 0;border-right:none}
+}
+
+/* ---------- Header ---------- */
+.site-header{
+  background:var(--paper);
+  border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:60;
+}
+.header-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.85rem 0;gap:1rem;
+}
+.brand{display:flex;align-items:center;gap:.7rem;text-decoration:none}
+.brand-mark{width:40px;height:40px;flex:none}
+.brand-text{line-height:1.15}
+.brand-text strong{font-size:1.25rem;letter-spacing:.06em;font-weight:800;text-transform:uppercase}
+.brand-text span{display:block;font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.nav-links{display:flex;align-items:center;gap:1.4rem;list-style:none}
+.nav-links a{
+  text-decoration:none;font-size:.9rem;font-weight:600;color:var(--slate-2);
+  font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;font-size:.76rem;
+}
+.nav-links a:hover{color:var(--blue)}
+.btn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:var(--blue);color:#fff;text-decoration:none;
+  font-weight:700;font-size:.92rem;
+  padding:.7rem 1.2rem;border-radius:6px;border:none;cursor:pointer;
+  font-family:var(--sans);
+  transition:background .15s;
+}
+.btn:hover{background:var(--blue-dark)}
+.btn-outline{
+  background:transparent;color:var(--slate);
+  border:1.5px solid var(--slate);
+}
+.btn-outline:hover{background:var(--slate);color:#fff}
+.btn svg{flex:none}
+.nav-call{display:inline-flex}
+.nav-toggle{
+  display:none;background:var(--paper);border:1.5px solid var(--slate);
+  border-radius:4px;padding:.4rem .55rem;cursor:pointer;
+}
+.nav-toggle svg{width:20px;height:20px;display:block}
+@media (max-width:860px){
+  .nav-toggle{display:block}
+  .nav-links{
+    display:none;position:absolute;top:100%;left:0;right:0;
+    background:var(--paper);flex-direction:column;align-items:flex-start;
+    gap:0;padding:.4rem 20px 1rem;border-bottom:1px solid var(--line);
+  }
+  .nav-links.open{display:flex}
+  .nav-links li{width:100%;border-bottom:1px solid #edf1f6;padding:.7rem 0}
+  .nav-links li:last-child{border-bottom:none;padding-top:.9rem}
+  .nav-call{width:100%;justify-content:center}
+}
+
+/* ---------- Hero: document header ---------- */
+.hero{
+  background:var(--paper);
+  border-bottom:1px solid var(--line);
+}
+.hero-grid{
+  display:grid;grid-template-columns:1.25fr .75fr;
+  gap:0;border-left:1px solid var(--line);border-right:1px solid var(--line);
+}
+.hero-main{padding:3.5rem 2.5rem 3rem;border-right:1px solid var(--line)}
+.doc-label{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--blue);font-weight:600;
+  display:inline-block;border:1.5px solid var(--blue);border-radius:3px;
+  padding:.3rem .7rem;margin-bottom:1.4rem;
+}
+.hero h1{
+  font-size:clamp(1.9rem,4vw,2.9rem);
+  line-height:1.12;letter-spacing:-.015em;font-weight:800;
+  margin-bottom:1.1rem;max-width:16ch;
+}
+.hero p.lede{color:var(--muted);font-size:1.05rem;max-width:38rem;margin-bottom:1.6rem}
+.hero-actions{display:flex;gap:.8rem;flex-wrap:wrap;align-items:center}
+.open-chip{
+  margin-top:1.8rem;display:inline-flex;align-items:center;gap:.6rem;
+  border:1px solid var(--line);border-radius:4px;background:var(--bg);
+  padding:.55rem .9rem;font-family:var(--mono);font-size:.76rem;letter-spacing:.05em;
+}
+.open-dot{width:9px;height:9px;border-radius:50%;background:var(--muted);flex:none}
+.open-chip.is-open .open-dot{background:var(--ok)}
+.open-chip.is-closed .open-dot{background:var(--fail)}
+.open-chip strong{font-weight:600}
+.hero-side{
+  display:flex;flex-direction:column;
+}
+.hero-photo{
+  position:relative;flex:1;min-height:220px;
+  background:#1e293b;
+  overflow:hidden;
+}
+.hero-photo img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.hero-photo figcaption{
+  position:absolute;left:0;right:0;bottom:0;
+  background:var(--slate);color:#cbd5e1;
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.55rem .9rem;
+}
+.hero-facts{border-top:1px solid var(--line)}
+.hero-facts .fact{
+  display:flex;justify-content:space-between;gap:1rem;
+  padding:.7rem 1.2rem;border-bottom:1px solid var(--line);
+  font-size:.85rem;
+}
+.hero-facts .fact:last-child{border-bottom:none}
+.hero-facts .fact span{font-family:var(--mono);color:var(--muted);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase}
+.hero-facts .fact b{font-weight:700;text-align:right}
+@media (max-width:860px){
+  .hero-grid{grid-template-columns:1fr}
+  .hero-main{border-right:none;border-bottom:1px solid var(--line);padding:2.2rem 1.4rem}
+}
+
+/* ---------- Section scaffolding ---------- */
+section{padding:0}
+.section-block{border-left:1px solid var(--line);border-right:1px solid var(--line)}
+.section-block + .section-block{border-top:1px solid var(--line)}
+.section-head{
+  display:flex;align-items:baseline;justify-content:space-between;gap:1rem;
+  padding:1.6rem 2.5rem 1.2rem;border-bottom:1px solid var(--line);
+  flex-wrap:wrap;
+}
+.section-no{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
+  color:var(--blue);font-weight:600;text-transform:uppercase;
+}
+.section-head h2{font-size:clamp(1.35rem,2.4vw,1.8rem);letter-spacing:-.01em;font-weight:800}
+.section-body{padding:1.8rem 2.5rem 2.4rem}
+@media (max-width:860px){
+  .section-head{padding:1.3rem 1.4rem 1rem}
+  .section-body{padding:1.4rem 1.4rem 1.8rem}
+}
+
+/* ---------- Checklist table ---------- */
+.check-table{width:100%;border-collapse:collapse;font-size:.95rem}
+.check-table th,.check-table td{
+  text-align:left;padding:.85rem 1rem;
+  border-bottom:1px solid var(--line);
+}
+.check-table th{
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);font-weight:600;border-bottom:2px solid var(--slate);
+}
+.check-table td:first-child{font-weight:700}
+.check-table td.note{color:var(--muted);font-size:.88rem}
+.tag{
+  display:inline-block;font-family:var(--mono);font-size:.68rem;
+  letter-spacing:.08em;text-transform:uppercase;font-weight:600;
+  border:1.5px solid;border-radius:3px;padding:.22rem .55rem;white-space:nowrap;
+}
+.tag-measured{color:var(--blue-dark);border-color:var(--blue-dark);background:#eff6ff}
+.tag-visual{color:var(--slate-2);border-color:var(--slate-2);background:#f1f5f9}
+.tag-pass{color:var(--ok);border-color:var(--ok);background:#f0fdf4}
+.tag-fail{color:var(--fail);border-color:var(--fail);background:#fef2f2}
+.table-scroll{overflow-x:auto}
+.check-note{
+  margin-top:1.4rem;border:1px dashed var(--line-dark);border-radius:6px;
+  background:#fbfcfe;padding:1.1rem 1.3rem;font-size:.92rem;color:var(--muted);
+}
+.check-note b{color:var(--ink)}
+@media (max-width:640px){
+  .check-table th:nth-child(3),.check-table td:nth-child(3){display:none}
+}
+
+/* ---------- Services split (asymmetric) ---------- */
+.split{display:grid;grid-template-columns:7fr 5fr;border-top:1px solid var(--line)}
+.split-main{padding:1.8rem 2.5rem 2.4rem;border-right:1px solid var(--line)}
+.split-side{
+  background:var(--slate);color:#e2e8f0;
+  padding:1.8rem 2.2rem 2.2rem;
+}
+.split-side h3{color:#fff}
+.col-title{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--blue);font-weight:600;margin-bottom:1.2rem;
+  display:flex;align-items:center;gap:.6rem;
+}
+.col-title::after{content:"";flex:1;height:1px;background:currentColor;opacity:.3}
+.split-side .col-title{color:#93c5fd}
+.price-rows{list-style:none}
+.price-rows li{
+  display:flex;justify-content:space-between;align-items:baseline;gap:1rem;
+  padding:.8rem 0;border-bottom:1px solid var(--line);
+}
+.split-side .price-rows li{border-bottom-color:#24304a}
+.price-rows li:last-child{border-bottom:none}
+.price-name{font-weight:700;font-size:.96rem}
+.price-desc{display:block;font-weight:400;font-size:.83rem;color:var(--muted)}
+.split-side .price-desc{color:#94a3b8}
+.price{
+  font-family:var(--mono);font-weight:600;font-size:.9rem;white-space:nowrap;
+  color:var(--blue-dark);
+}
+.split-side .price{color:#fff}
+.split-side .btn{width:100%;justify-content:center;margin-top:1.4rem}
+.side-note{font-size:.8rem;color:#94a3b8;margin-top:.9rem;font-family:var(--mono)}
+@media (max-width:820px){
+  .split{grid-template-columns:1fr}
+  .split-main{border-right:none;padding:1.6rem 1.4rem}
+  .split-side{padding:1.6rem 1.4rem}
+}
+
+/* ---------- Hours table ---------- */
+.hours-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+.hours-table{width:100%;border-collapse:collapse}
+.hours-table th,.hours-table td{
+  border:1px solid var(--line-dark);padding:.7rem 1rem;font-size:.92rem;text-align:left;
+}
+.hours-table th{
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);background:#f1f5f9;font-weight:600;
+}
+.hours-table td.time{font-family:var(--mono);font-weight:600;font-size:.85rem}
+.hours-table tr.today td{background:#eff6ff;border-top:2px solid var(--blue);border-bottom:2px solid var(--blue)}
+.hours-table tr.today td:first-child{border-left:2px solid var(--blue)}
+.hours-table tr.today td:last-child{border-right:2px solid var(--blue)}
+.hours-table .closed{color:var(--fail)}
+.hours-copy p{color:var(--muted);font-size:.95rem;margin-bottom:1rem}
+.hours-copy .open-chip{margin-top:.4rem}
+@media (max-width:720px){.hours-grid{grid-template-columns:1fr;gap:1.5rem}}
+
+/* ---------- Visit / directions ---------- */
+.visit-grid{display:grid;grid-template-columns:5fr 7fr;gap:0;border:1px solid var(--line-dark);border-radius:6px;overflow:hidden;background:var(--paper)}
+.visit-info{padding:2rem 2rem 2.2rem}
+.visit-info h3{font-size:1.25rem;margin-bottom:1.1rem}
+.addr-block{
+  border-left:3px solid var(--blue);padding:.8rem 0 .8rem 1.1rem;margin-bottom:1.3rem;
+}
+.addr-block .addr{font-size:1.05rem;font-weight:700}
+.addr-block .mono-line{font-family:var(--mono);font-size:.82rem;color:var(--muted);margin-top:.35rem}
+.visit-rows{list-style:none;margin-bottom:1.6rem}
+.visit-rows li{
+  display:flex;gap:.8rem;align-items:flex-start;padding:.55rem 0;font-size:.93rem;color:var(--muted);
+}
+.visit-rows svg{width:18px;height:18px;flex:none;margin-top:2px}
+.visit-rows a{color:var(--blue-dark);font-weight:600;text-decoration:none}
+.visit-rows a:hover{text-decoration:underline}
+.visit-photo{position:relative;min-height:280px;background:#1e293b}
+.visit-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.visit-photo figcaption{
+  position:absolute;left:0;bottom:0;right:0;
+  background:var(--slate);color:#cbd5e1;
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.55rem .9rem;
+}
+@media (max-width:820px){
+  .visit-grid{grid-template-columns:1fr}
+  .visit-photo{min-height:220px;order:-1}
+}
+
+/* ---------- Booking slip ---------- */
+.book-grid{display:grid;grid-template-columns:5fr 7fr;gap:2.5rem;align-items:start}
+.book-copy h3{font-size:1.3rem;margin-bottom:.9rem}
+.book-copy p{color:var(--muted);font-size:.96rem;margin-bottom:1rem}
+.book-steps{list-style:none;counter-reset:step;margin-top:1.4rem}
+.book-steps li{
+  counter-increment:step;position:relative;padding:.7rem 0 .7rem 2.6rem;
+  border-bottom:1px dashed var(--line);font-size:.93rem;color:var(--muted);
+}
+.book-steps li::before{
+  content:counter(step,decimal-leading-zero);
+  position:absolute;left:0;top:.62rem;
+  font-family:var(--mono);font-size:.72rem;font-weight:600;color:var(--blue);
+  border:1.5px solid var(--blue);border-radius:3px;padding:.15rem .4rem;
+}
+.slip{
+  background:var(--paper);
+  border:1.5px solid var(--slate);
+  border-radius:6px;
+  box-shadow:6px 6px 0 #e2e8f0;
+}
+.slip-head{
+  display:flex;justify-content:space-between;align-items:center;gap:1rem;
+  background:var(--slate);color:#fff;
+  padding:.85rem 1.4rem;border-radius:4px 4px 0 0;
+  font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;
+}
+.slip-head b{color:#93c5fd;font-weight:600}
+.slip form{padding:1.6rem 1.4rem 1.8rem}
+.field{margin-bottom:1.1rem}
+.field label{
+  display:block;font-family:var(--mono);font-size:.7rem;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem;
+}
+.field input,.field textarea{
+  width:100%;padding:.7rem .85rem;
+  border:1.5px solid var(--line-dark);border-radius:4px;
+  font:inherit;font-size:.95rem;color:var(--ink);background:#fbfcfe;
+}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+.field textarea{resize:vertical;min-height:110px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media (max-width:560px){.field-row{grid-template-columns:1fr}}
+.slip-foot{
+  border-top:1px dashed var(--line-dark);margin:0 1.4rem;padding:.9rem 0 1.3rem;
+  font-family:var(--mono);font-size:.72rem;color:var(--muted);letter-spacing:.06em;
+}
+.slip .btn{width:100%;justify-content:center}
+.slip-success{
+  display:none;margin:1.6rem 1.4rem 0;
+  border:1.5px solid var(--ok);background:#f0fdf4;color:#14532d;
+  border-radius:4px;padding:1rem 1.2rem;font-size:.92rem;
+}
+.slip-success.show{display:block}
+.slip-success b{font-family:var(--mono)}
+@media (max-width:820px){.book-grid{grid-template-columns:1fr;gap:1.8rem}}
+
+/* ---------- Footer ---------- */
+.site-footer{
+  background:var(--slate);color:#94a3b8;
+  border-top:3px solid var(--blue);
+  margin-top:0;
+}
+.footer-inner{padding:2.6rem 0 1.6rem}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:2rem;padding-bottom:1.8rem;border-bottom:1px solid #24304a}
+.footer-grid h4{
+  color:#fff;font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
+  text-transform:uppercase;margin-bottom:.8rem;font-weight:600;
+}
+.footer-grid p,.footer-grid li{font-size:.88rem}
+.footer-grid ul{list-style:none}
+.footer-grid li{padding:.2rem 0}
+.footer-grid a{color:#cbd5e1;text-decoration:none}
+.footer-grid a:hover{color:#fff;text-decoration:underline}
+.footer-brand{display:flex;align-items:center;gap:.6rem;margin-bottom:.9rem;color:#fff;text-decoration:none}
+.footer-brand strong{font-size:1.1rem;letter-spacing:.06em;text-transform:uppercase}
+.footer-legal{
+  display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  padding-top:1.3rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;color:#64748b;text-transform:uppercase;
+}
+@media (max-width:720px){.footer-grid{grid-template-columns:1fr;gap:1.4rem}}
+
+/* ---------- Mobile call bar ---------- */
+.call-bar{
+  display:none;position:fixed;left:0;right:0;bottom:0;z-index:70;
+  background:var(--slate);border-top:2px solid var(--blue);
+  padding:.6rem .9rem;gap:.6rem;
+}
+.call-bar a{
+  flex:1;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  font-family:var(--mono);font-size:.8rem;font-weight:600;letter-spacing:.06em;
+  text-decoration:none;padding:.7rem .5rem;border-radius:4px;text-transform:uppercase;
+}
+.call-bar .call{background:var(--blue);color:#fff}
+.call-bar .book{color:#cbd5e1;border:1.5px solid #475569}
+@media (max-width:720px){
+  .call-bar{display:flex}
+  body{padding-bottom:64px}
+}
+
+/* ---------- Reveal ---------- */
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+.reveal.visible{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none;transition:none}
+}
+</style>
+</head>
+<body>
+
+<!-- Stamp strip -->
+<div class="stamp-strip" role="note">
+  <div class="wrap">
+    <span class="stamp"><b>Hakus</b> / inspection station</span>
+    <span class="stamp">Espoo 02270</span>
+    <span class="stamp">Walk-in accepted</span>
+    <span class="stamp push">Tel <a href="tel:+35898676688">+358 9 8676688</a></span>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="#top" aria-label="Hakus, back to top">
+      <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" fill="#0f172a"/><rect x="8" y="8" width="48" height="48" fill="none" stroke="#2563eb" stroke-width="4"/><path d="M20 33l8 8 16-18" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="square"/></svg>
+      <span class="brand-text"><strong>Hakus</strong><span>Katsastus &amp; Korjaamo</span></span>
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <nav aria-label="Main navigation">
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#inspection">Inspection</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#hours">Hours</a></li>
+        <li><a href="#visit">Directions</a></li>
+        <li><a class="btn nav-call" href="tel:+35898676688">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2z"/></svg>
+          +358 9 8676688
+        </a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- Hero -->
+  <section class="hero" aria-label="Introduction">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero-main reveal">
+          <span class="doc-label">Espoo / Hannuksenpelto</span>
+          <h1>Car inspection and repair under one roof</h1>
+          <p class="lede">Hakus is a local inspection station and workshop at Hannuksenpelto 8, Espoo. We carry out the Finnish periodic inspection (katsastus) and fix what needs fixing, so you leave with a road-legal car the same day.</p>
+          <div class="hero-actions">
+            <a class="btn" href="#book">Book an inspection</a>
+            <a class="btn btn-outline" href="#inspection">What is katsastus?</a>
+          </div>
+          <div class="open-chip" id="open-chip" role="status">
+            <span class="open-dot" aria-hidden="true"></span>
+            <span id="open-chip-text">Checking opening hours…</span>
+          </div>
+        </div>
+        <div class="hero-side reveal">
+          <figure class="hero-photo">
+            <img src="https://images.unsplash.com/photo-1625047509168-a7026f36de04?auto=format&fit=crop&w=1200&q=80" alt="Mechanic working under a car on a lift" loading="eager" onerror="this.style.display='none'">
+            <figcaption>Workshop floor, Hannuksenpelto</figcaption>
+          </figure>
+          <div class="hero-facts">
+            <div class="fact"><span>Station type</span><b>Inspection + repair</b></div>
+            <div class="fact"><span>Inspection time</span><b>About 30 min</b></div>
+            <div class="fact"><span>Booking</span><b>Walk-in or phone</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Inspection checklist -->
+  <section id="inspection" aria-label="What the inspection covers">
+    <div class="wrap">
+      <div class="section-block reveal">
+        <div class="section-head">
+          <h2>What the periodic inspection covers</h2>
+          <span class="section-no">Section 01 / Checklist</span>
+        </div>
+        <div class="section-body">
+          <p style="color:var(--muted);max-width:44rem;margin-bottom:1.6rem">Katsastus is the mandatory roadworthiness check required by Finnish law for every registered car. A new car is inspected for the first time when it turns four, then regularly after that. The due date is printed on your registration certificate. Driving with an overdue inspection can lead to a fine and invalid insurance.</p>
+          <div class="table-scroll">
+            <table class="check-table">
+              <thead>
+                <tr><th>Checkpoint</th><th>What we look at</th><th>Method</th><th>Result</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Brakes</td>
+                  <td class="note">Braking force, balance and handbrake on the roller tester</td>
+                  <td><span class="tag tag-measured">Measured</span></td>
+                  <td><span class="tag tag-pass">Pass</span> / <span class="tag tag-fail">Fail</span></td>
+                </tr>
+                <tr>
+                  <td>Lights &amp; electrics</td>
+                  <td class="note">Headlight aim, indicators, brake lights, horn, battery</td>
+                  <td><span class="tag tag-measured">Beam test</span></td>
+                  <td><span class="tag tag-pass">Pass</span> / <span class="tag tag-fail">Fail</span></td>
+                </tr>
+                <tr>
+                  <td>Emissions</td>
+                  <td class="note">Exhaust gas analysis, checked against limits for your model</td>
+                  <td><span class="tag tag-measured">Measured</span></td>
+                  <td><span class="tag tag-pass">Pass</span> / <span class="tag tag-fail">Fail</span></td>
+                </tr>
+                <tr>
+                  <td>Suspension &amp; steering</td>
+                  <td class="note">Shock absorbers, joints, play in steering components</td>
+                  <td><span class="tag tag-measured">Measured</span></td>
+                  <td><span class="tag tag-pass">Pass</span> / <span class="tag tag-fail">Fail</span></td>
+                </tr>
+                <tr>
+                  <td>Body &amp; rust</td>
+                  <td class="note">Structural corrosion, sharp edges, doors, seatbelt mounts</td>
+                  <td><span class="tag tag-visual">Visual</span></td>
+                  <td><span class="tag tag-pass">Pass</span> / <span class="tag tag-fail">Fail</span></td>
+                </tr>
+                <tr>
+                  <td>Tyres &amp; wheels</td>
+                  <td class="note">Tread depth (min. 1.6 mm summer, 3 mm winter), damage</td>
+                  <td><span class="tag tag-visual">Visual</span></td>
+                  <td><span class="tag tag-pass">Pass</span> / <span class="tag tag-fail">Fail</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="check-note"><b>If your car fails:</b> you have one month to repair the faults and return for a re-inspection. Because our mechanics work in the same building, most faults can be quoted and fixed on the spot, and the re-inspection is discounted when the repair is done with us.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services split -->
+  <section id="services" aria-label="Services and prices">
+    <div class="wrap">
+      <div class="section-block reveal">
+        <div class="section-head">
+          <h2>Services and starting prices</h2>
+          <span class="section-no">Section 02 / Price list</span>
+        </div>
+        <div class="split">
+          <div class="split-main">
+            <p class="col-title">Inspection services</p>
+            <ul class="price-rows">
+              <li>
+                <div><span class="price-name">Periodic inspection (katsastus)</span><span class="price-desc">Passenger car, emissions test included</span></div>
+                <span class="price">from €69</span>
+              </li>
+              <li>
+                <div><span class="price-name">Re-inspection after repair</span><span class="price-desc">Within one month, when repaired with us</span></div>
+                <span class="price">from €25</span>
+              </li>
+              <li>
+                <div><span class="price-name">Registration inspection</span><span class="price-desc">For imported or previously unregistered vehicles</span></div>
+                <span class="price">from €45</span>
+              </li>
+              <li>
+                <div><span class="price-name">Pre-inspection check</span><span class="price-desc">Voluntary once-over before the official date</span></div>
+                <span class="price">from €35</span>
+              </li>
+            </ul>
+          </div>
+          <div class="split-side">
+            <p class="col-title">Mechanical repair</p>
+            <ul class="price-rows">
+              <li>
+                <div><span class="price-name">Oil service</span><span class="price-desc">Oil and filter, levels topped up</span></div>
+                <span class="price">from €89</span>
+              </li>
+              <li>
+                <div><span class="price-name">Timing belt kit</span><span class="price-desc">Belt, tensioners and water pump</span></div>
+                <span class="price">from €390</span>
+              </li>
+              <li>
+                <div><span class="price-name">Fault diagnostics</span><span class="price-desc">OBD readout and mechanic assessment</span></div>
+                <span class="price">from €49</span>
+              </li>
+              <li>
+                <div><span class="price-name">Brake service</span><span class="price-desc">Pads and discs, per axle</span></div>
+                <span class="price">from €180</span>
+              </li>
+            </ul>
+            <a class="btn" href="tel:+35898676688">Call to book a repair</a>
+            <p class="side-note">Repair work is booked by phone. Inspections welcome without an appointment.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hours -->
+  <section id="hours" aria-label="Opening hours">
+    <div class="wrap">
+      <div class="section-block reveal">
+        <div class="section-head">
+          <h2>Opening hours</h2>
+          <span class="section-no">Section 03 / Hours</span>
+        </div>
+        <div class="section-body">
+          <div class="hours-grid">
+            <table class="hours-table" id="hours-table">
+              <thead>
+                <tr><th>Day</th><th>Hours</th></tr>
+              </thead>
+              <tbody>
+                <tr data-day="1"><td>Monday</td><td class="time">08:00-17:00</td></tr>
+                <tr data-day="2"><td>Tuesday</td><td class="time">08:00-17:00</td></tr>
+                <tr data-day="3"><td>Wednesday</td><td class="time">08:00-17:00</td></tr>
+                <tr data-day="4"><td>Thursday</td><td class="time">08:00-17:00</td></tr>
+                <tr data-day="5"><td>Friday</td><td class="time">08:00-17:00</td></tr>
+                <tr data-day="6"><td>Saturday</td><td class="time closed">Closed</td></tr>
+                <tr data-day="0"><td>Sunday</td><td class="time closed">Closed</td></tr>
+              </tbody>
+            </table>
+            <div class="hours-copy">
+              <p>Walk-in inspections run all day on weekdays. Last car is taken in at 16:30 so the inspection can be finished before closing.</p>
+              <p>Hours: Mon-Fri 08:00-17:00, Sat-Sun closed. Public holidays follow the weekend schedule.</p>
+              <div class="open-chip" id="open-chip-2" role="status">
+                <span class="open-dot" aria-hidden="true"></span>
+                <span id="open-chip-2-text">Checking opening hours…</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Visit / directions -->
+  <section id="visit" aria-label="Location and directions">
+    <div class="wrap">
+      <div class="section-block reveal">
+        <div class="section-head">
+          <h2>Find the station</h2>
+          <span class="section-no">Section 04 / Location</span>
+        </div>
+        <div class="section-body">
+          <div class="visit-grid">
+            <div class="visit-info">
+              <h3>Hannuksenpelto, Espoo</h3>
+              <div class="addr-block">
+                <div class="addr">Hannuksenpelto 8, 02270 Espoo</div>
+                <div class="mono-line">Near the Ring II junction, 10 min from Leppävaara</div>
+              </div>
+              <ul class="visit-rows">
+                <li>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2z"/></svg>
+                  <span>Phone: <a href="tel:+35898676688">+358 9 8676688</a></span>
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 17h14M6 17l1.5-5.5A2 2 0 0 1 9.4 10h5.2a2 2 0 0 1 1.9 1.5L18 17M7 17v2M17 17v2"/><circle cx="8" cy="13.5" r=".5"/><circle cx="16" cy="13.5" r=".5"/></svg>
+                  <span>Customer parking on the yard, drive straight in from Hannuksenpelto</span>
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+                  <span>Bus stop "Hannuksenpelto" on lines along Turuntie</span>
+                </li>
+              </ul>
+              <a class="btn" href="https://www.google.com/maps/place/Hakus/@60.1551523,24.695906" target="_blank" rel="noopener">
+                Get directions
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+              </a>
+            </div>
+            <figure class="visit-photo">
+              <img src="https://images.unsplash.com/photo-1613214149922-f1809c99b414?auto=format&fit=crop&w=1200&q=80" alt="Car raised on a lift inside an inspection workshop" loading="lazy" onerror="this.style.display='none'">
+              <figcaption>Inspection hall, Hannuksenpelto 8</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Booking slip -->
+  <section id="book" aria-label="Book an inspection or repair">
+    <div class="wrap">
+      <div class="section-block reveal" style="border-bottom:1px solid var(--line)">
+        <div class="section-head">
+          <h2>Request a booking</h2>
+          <span class="section-no">Section 05 / Booking slip</span>
+        </div>
+        <div class="section-body">
+          <div class="book-grid">
+            <div class="book-copy">
+              <h3>Fill in the slip, we call you back</h3>
+              <p>Leave your details and tell us what the car needs. We confirm a time by phone or email, usually within the same working day.</p>
+              <ol class="book-steps">
+                <li>Send the slip with your contact details</li>
+                <li>We call or email to agree on a time</li>
+                <li>Drive in at Hannuksenpelto 8, we handle the rest</li>
+              </ol>
+              <p style="margin-top:1.2rem">In a hurry? Call <a href="tel:+35898676688" style="color:var(--blue-dark);font-weight:700;text-decoration:none">+358 9 8676688</a> and ask for the next free slot.</p>
+            </div>
+            <div class="slip">
+              <div class="slip-head">
+                <span>Booking slip</span>
+                <b>HK-2026-ESP</b>
+              </div>
+              <div class="slip-success" id="slip-success" role="status">
+                <b>Slip received.</b><br>
+                Thank you. This is a demo site, so no data is actually sent or stored. On the real site we would call you back to confirm a time.
+              </div>
+              <form id="booking-form" novalidate>
+                <div class="field-row">
+                  <div class="field">
+                    <label for="f-name">Name</label>
+                    <input type="text" id="f-name" name="name" autocomplete="name" required placeholder="Firstname Lastname">
+                  </div>
+                  <div class="field">
+                    <label for="f-contact">Phone or email</label>
+                    <input type="text" id="f-contact" name="contact" autocomplete="tel" required placeholder="040 123 4567">
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="f-msg">Message</label>
+                  <textarea id="f-msg" name="message" required placeholder="Car model, registration number if handy, and what you need: inspection, oil service, timing belt, diagnostics…"></textarea>
+                </div>
+                <button type="submit" class="btn">Send booking request</button>
+              </form>
+              <div class="slip-foot">Form 05 / Hakus, Hannuksenpelto 8, 02270 Espoo / Demo only, no data is transmitted</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <div class="footer-grid">
+      <div>
+        <a class="footer-brand" href="#top">
+          <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" fill="#1e293b"/><rect x="8" y="8" width="48" height="48" fill="none" stroke="#2563eb" stroke-width="4"/><path d="M20 33l8 8 16-18" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="square"/></svg>
+          <strong>Hakus</strong>
+        </a>
+        <p>Car inspection (katsastus) and mechanical repair station in Hannuksenpelto, Espoo. Inspection and repair under one roof since day one.</p>
+      </div>
+      <div>
+        <h4>Address</h4>
+        <p>Hannuksenpelto 8<br>02270 Espoo, Finland</p>
+        <p style="margin-top:.6rem"><a href="https://www.google.com/maps/place/Hakus/@60.1551523,24.695906" target="_blank" rel="noopener">Get directions</a></p>
+      </div>
+      <div>
+        <h4>Contact &amp; hours</h4>
+        <ul>
+          <li><a href="tel:+35898676688">+358 9 8676688</a></li>
+          <li>Mon-Fri 08:00-17:00</li>
+          <li>Sat-Sun closed</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <span>Hakus / Espoo</span>
+      <span>Demo website</span>
+      <span>© 2026</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Mobile call bar -->
+<div class="call-bar">
+  <a class="call" href="tel:+35898676688">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2z"/></svg>
+    Call station
+  </a>
+  <a class="book" href="#book">Book</a>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // Mobile nav
+  var toggle=document.querySelector(".nav-toggle");
+  var links=document.getElementById("nav-links");
+  toggle.addEventListener("click",function(){
+    var open=links.classList.toggle("open");
+    toggle.setAttribute("aria-expanded",open?"true":"false");
+  });
+  links.addEventListener("click",function(e){
+    if(e.target.closest("a")){
+      links.classList.remove("open");
+      toggle.setAttribute("aria-expanded","false");
+    }
+  });
+
+  // Reveal on scroll
+  var revealEls=document.querySelectorAll(".reveal");
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){en.target.classList.add("visible");io.unobserve(en.target);}
+      });
+    },{threshold:0.1});
+    revealEls.forEach(function(el){io.observe(el);});
+  }else{
+    revealEls.forEach(function(el){el.classList.add("visible");});
+  }
+
+  // Open-now indicator (Europe/Helsinki time, Mon-Fri 08:00-17:00)
+  function helsinkiNow(){
+    try{
+      var s=new Date().toLocaleString("en-US",{timeZone:"Europe/Helsinki"});
+      return new Date(s);
+    }catch(e){
+      return new Date();
+    }
+  }
+  function fmt(n){return (n<10?"0":"")+n;}
+  function updateOpenStatus(){
+    var now=helsinkiNow();
+    var day=now.getDay();
+    var mins=now.getHours()*60+now.getMinutes();
+    var open=day>=1&&day<=5&&mins>=480&&mins<1020;
+    var text;
+    if(open){
+      text="OPEN NOW, closes 17:00";
+    }else if(day>=1&&day<=5&&mins<480){
+      text="CLOSED, opens today 08:00";
+    }else{
+      var daysAhead=(8-day)%7||7;
+      if(day===5&&mins>=1020)daysAhead=3;
+      if(day===6)daysAhead=2;
+      var names=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+      var next=new Date(now);next.setDate(now.getDate()+daysAhead);
+      text="CLOSED, opens "+names[next.getDay()]+" 08:00";
+    }
+    [["open-chip","open-chip-text"],["open-chip-2","open-chip-2-text"]].forEach(function(pair){
+      var chip=document.getElementById(pair[0]);
+      var label=document.getElementById(pair[1]);
+      if(!chip||!label)return;
+      chip.classList.toggle("is-open",open);
+      chip.classList.toggle("is-closed",!open);
+      label.innerHTML="<strong>"+(open?"Open now":"Closed")+"</strong> / "+text.split(", ")[1];
+    });
+    var rows=document.querySelectorAll("#hours-table tbody tr");
+    rows.forEach(function(r){
+      r.classList.toggle("today",parseInt(r.getAttribute("data-day"),10)===day);
+    });
+  }
+  updateOpenStatus();
+  setInterval(updateOpenStatus,60000);
+
+  // Booking slip (demo, no backend)
+  var form=document.getElementById("booking-form");
+  var success=document.getElementById("slip-success");
+  form.addEventListener("submit",function(e){
+    e.preventDefault();
+    if(!form.checkValidity()){form.reportValidity();return;}
+    success.classList.add("show");
+    form.reset();
+    success.scrollIntoView({behavior:"smooth",block:"center"});
+  });
+})();
+</script>
+</body>
+</html>
